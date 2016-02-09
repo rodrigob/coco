@@ -1,6 +1,6 @@
 all:
     # install pycocotools locally
-	python setup.py build_ext --inplace
+	python3.4 setup.py build_ext --inplace
 	rm -rf build
 
 install:

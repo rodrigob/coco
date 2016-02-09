@@ -44,6 +44,7 @@ __version__ = '1.0.1'
 # Code written by Piotr Dollar and Tsung-Yi Lin, 2014.
 # Licensed under the Simplified BSD License [see bsd.txt]
 
+import six
 import json
 import datetime
 import time
@@ -74,16 +75,16 @@ class COCO:
         self.imgs = {}
         self.cats = {}
         if not annotation_file == None:
-            print 'loading annotations into memory...'
+            six.print_('loading annotations into memory...')
             tic = time.time()
             dataset = json.load(open(annotation_file, 'r'))
-            print 'Done (t=%0.2fs)'%(time.time()- tic)
+            six.print_('Done (t=%0.2fs)'%(time.time()- tic))
             self.dataset = dataset
             self.createIndex()
 
     def createIndex(self):
         # create index
-        print 'creating index...'
+        six.print_('creating index...')
         anns = {}
         imgToAnns = {}
         catToImgs = {}
@@ -109,7 +110,7 @@ class COCO:
             for ann in self.dataset['annotations']:
                 catToImgs[ann['category_id']] += [ann['image_id']]
 
-        print 'index created!'
+        six.print_('index created!')
 
         # create class members
         self.anns = anns
@@ -120,11 +121,11 @@ class COCO:
 
     def info(self):
         """
-        Print information about the annotation file.
+        print information about the annotation file.
         :return:
         """
         for key, value in self.dataset['info'].items():
-            print '%s: %s'%(key, value)
+            six.print_('%s: %s'%(key, value))
 
     def getAnnIds(self, imgIds=[], catIds=[], areaRng=[], iscrowd=None):
         """
@@ -275,7 +276,7 @@ class COCO:
             ax.add_collection(p)
         elif datasetType == 'captions':
             for ann in anns:
-                print ann['caption']
+                six.print_(ann['caption'])
 
     def loadRes(self, resFile):
         """
@@ -288,7 +289,7 @@ class COCO:
         # res.dataset['info'] = copy.deepcopy(self.dataset['info'])
         # res.dataset['licenses'] = copy.deepcopy(self.dataset['licenses'])
 
-        print 'Loading and preparing results...     '
+        six.print_('Loading and preparing results...     ')
         tic = time.time()
         anns    = json.load(open(resFile))
         assert type(anns) == list, 'results in not an array of objects'
@@ -319,7 +320,7 @@ class COCO:
                     ann['bbox'] = mask.toBbox([ann['segmentation']])[0]
                 ann['id'] = id+1
                 ann['iscrowd'] = 0
-        print 'DONE (t=%0.2fs)'%(time.time()- tic)
+        six.print_('DONE (t=%0.2fs)'%(time.time()- tic))
 
         res.dataset['annotations'] = anns
         res.createIndex()
@@ -333,7 +334,7 @@ class COCO:
         :return:
         '''
         if tarDir is None:
-            print 'Please specify target directory'
+            six.print_('Please specify target directory')
             return -1
         if len(imgIds) == 0:
             imgs = self.imgs.values()
@@ -347,4 +348,4 @@ class COCO:
             fname = os.path.join(tarDir, img['file_name'])
             if not os.path.exists(fname):
                 urllib.urlretrieve(img['coco_url'], fname)
-            print 'downloaded %d/%d images (t=%.1fs)'%(i, N, time.time()- tic)
+            six.print_('downloaded %d/%d images (t=%.1fs)'%(i, N, time.time()- tic))
